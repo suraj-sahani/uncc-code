@@ -37,3 +37,7 @@ const altBuffer = Buffer.from("486921", "hex"); // We pass the values as a strin
 // i.e hex
 console.log(altBuffer); // Same output => <Buffer 48 69 21>
 console.log(altBuffer.toString("utf-8")); // We get the same output : "Hi!
+
+// Reverse Encoding of hex from text
+const revBuffer = Buffer.from("Hi!", "utf-8");
+console.log(revBuffer); // Output => <Buffer 48 69 21>
