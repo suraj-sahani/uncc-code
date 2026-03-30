@@ -17,5 +17,9 @@
   "bugs": {
     "url": "https://github.com/suraj-sahani/uncc-code/issues"
   },
-  "homepage": "https://github.com/suraj-sahani/uncc-code#readme"
+  "homepage": "https://github.com/suraj-sahani/uncc-code#readme",
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "tsx": "^4.21.0"
+  }
 }
