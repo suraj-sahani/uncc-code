@@ -18,3 +18,9 @@ descimalRep.forEach((num, index) => {
 });
 
 console.log(allocatedBuffer.toString("utf-8")); // => Output : Hi!
+
+// Alternate Approach
+// Using the Buffer.from method, we don;t need to allocate memory maually,
+// It will figure out the required memory automatically.
+const altBuffer = Buffer.from(descimalRep);
+console.log(altBuffer.toString("utf-8"));
