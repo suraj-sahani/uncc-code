@@ -30,3 +30,15 @@ for (let i = 0; i < unsafeBuffer.length; i++) {
 // passed to them as soon as they are allocated
 // Making these safe to use
 
+// Another way to allocate buffer is 
+// The key difference is that this method will not use any memory
+// that was previously allocated
+const bufferAlloc = Buffer.allocUnsafeSlow(1000)
+
+
+// Also a key not is that if we create a buffer using 
+// Buffer.allocUnsafe and we allocate a memory of <= Buffer.poolSize,
+// It create a really fast Buffer that can be retrieved and used in case 
+// we allocate another buffer of the same size
+// This size of buffer is used by nodejs internally
+
