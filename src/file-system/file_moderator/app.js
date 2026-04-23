@@ -2,6 +2,7 @@ import fs from "fs/promises";
 
 (async () => {
   try {
+    const commandFile = await fs.open("./command.txt", "r")
     // Watch the entire directory for changes
     const watcher = fs.watch("./command.txt");
 
@@ -16,10 +17,33 @@ import fs from "fs/promises";
       // There is no definite reason for it and is dependent
       // on how the OS handles file changes
 
+
       // We need to check for change events only.
       if (event.eventType === "change") {
-        console.dir({ event }, { depth: Infinity });
+        // To read the contents of a file, we have to first open it.
+        // When we open a file, we are not actually moving all the content of the file
+        // to the memory, except, we are saving a number regaring the file.
+        // This number is called the file descriptor.
+        // const content = await commandFile.read()
+        // When we log this file, we can see that the amount of bytes allocated,
+        // for this is much more that actually needed.
+        // This is overuse of memory.
+        // console.dir({ content }, { depth: Infinity })
+
+        // to allocate a buffer that is only limmited to content,
+        // we need to pass an option to  the readFile method
+        // this will be size of the bufffer and to allocate that size,
+        // we pass it using Buffer.alloc()
+        // But, we need to find out the size of out file.
+        const fileStats = await commandFile.stat()
+        const fileSize = fileStats.size
+        // Now, the memory allocated is only limited to the size of the file/contents
+        // of the file
+        const content = await commandFile.read(Buffer.alloc(fileSize))
+        console.dir({ content }, { depth: Infinity })
+
       }
+
     }
   } catch (error) {
     console.error(error);
