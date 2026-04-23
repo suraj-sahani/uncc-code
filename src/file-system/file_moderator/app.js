@@ -1,5 +1,25 @@
 import fs from "fs/promises";
 
+
+async function createFile(path) {
+  let existingFile
+
+  try {
+    // Checking if we already have the file created.
+    // if there is not, it will throw an error
+    existingFile = await fs.open(path, "r")
+    // We also need to close the file, this will create a memory leak
+    existingFile.close()
+    console.error(`The file ${path} is already created.`)
+    return
+  } catch (error) {
+    const newFile = await fs.open(path, 'w')
+    console.log("New File was creatd")
+    newFile.close()
+  }
+
+}
+
 (async () => {
   try {
     const commandFile = await fs.open("./command.txt", "r")
@@ -39,8 +59,28 @@ import fs from "fs/promises";
       // Syntax = command.readFile(buffer,offset,length, options)
       const offset = 0, buff = Buffer.alloc(fileSize), length = buff.byteLength, position = 0
       // Now, we always get the correct refernce to the file
-      const content = await commandFile.read(buff, offset, length, position)
-      console.dir({ content }, { depth: Infinity })
+      // const content = await commandFile.read(buff, offset, length, position)
+      // We dont really need to store the data into a variable, as it is already,
+      // present in the buff using which we are allocating memory
+      await commandFile.read(buff, offset, length, position)
+
+      // Now, the content we get is actually encode hexa-decimals and we want to get
+      // meaningful data out of it, thus, we need to deconde it.
+      const command = buff.toString('utf-8')
+
+      // Command Format: CREATE : Path
+      const [type, path] = command.split(':')
+
+      switch (type) {
+        case "CREATE": {
+          await createFile(path.replaceAll('\n', ''))
+          break;
+        }
+        default: {
+          console.error(`Invalid command type: ${type}`)
+          break;
+        }
+      }
 
 
     })
