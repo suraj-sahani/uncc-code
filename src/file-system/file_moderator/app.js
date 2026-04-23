@@ -39,7 +39,20 @@ import fs from "fs/promises";
         const fileSize = fileStats.size
         // Now, the memory allocated is only limited to the size of the file/contents
         // of the file
-        const content = await commandFile.read(Buffer.alloc(fileSize))
+        // const content = await commandFile.read(Buffer.alloc(fileSize))
+        // We can often see that we are getting logs where the file/buffer is filled with zeros.
+        // This is due to the fact that everytime we save the file, the position from which,
+        // the file is read changes
+        // this is due to the fact that when the file is read for the first time, it reads it from the beginning
+        // but afterwards, it reads it from the end. This is why we get all zeros as there is nothing
+        // after the end of the file contents.
+        // We can prevent this by passing the exact location to the file,
+        // in the fileRead method.
+        // Reference: https://nodejs.org/docs/latest/api/fs.html#filehandlereadfileoptions
+        // Syntax = command.readFile(buffer,offset,length, options)
+        const offset = 0, buff = Buffer.alloc(fileSize), length = fileSize, position = 0
+        // Now, we always get the correct refernce to the file
+        const content = await commandFile.read(buff, offset, length, position)
         console.dir({ content }, { depth: Infinity })
 
       }
