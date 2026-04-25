@@ -1,1 +1,1 @@
-CREATE:/Users/surajsahani/dev/uncc-code/src/file-system/file_moderator/abs_path.ts
+DELETE: some_file.txt

@@ -20,6 +20,14 @@ async function createFile(path) {
 
 }
 
+async function deleteFile(path) {
+  try {
+    await fs.unlink(path)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 (async () => {
   try {
     const commandFile = await fs.open("./command.txt", "r")
@@ -74,6 +82,18 @@ async function createFile(path) {
       switch (type) {
         case "CREATE": {
           await createFile(path.replaceAll('\n', ''))
+          break;
+        }
+        case "DELETE": {
+          await deleteFile(path.replaceAll('\n', ''))
+          break;
+        }
+        case "RENAME": {
+          console.log("Rename file")
+          break
+        }
+        case "UPDATE": {
+          console.log("Update file")
           break;
         }
         default: {
