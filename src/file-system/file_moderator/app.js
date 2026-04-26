@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 
+function sanitizePath(path) { return path.trim().replaceAll('\n', '') }
 
 async function createFile(path) {
   let existingFile
@@ -30,6 +31,18 @@ async function deleteFile(path) {
   } catch (error) {
     if (error.code === 'ENOENT') {
       console.error(`No file at this path`)
+    } else
+      console.error(error)
+  }
+}
+
+async function renameFile(oldPath, newPath) {
+  try {
+    await fs.rename(oldPath, newPath)
+  } catch (error) {
+    console.error(error)
+    if (error.code === 'ENOENT') {
+      console.error(`Invalid path to rename file.`)
     } else
       console.error(error)
   }
@@ -88,15 +101,19 @@ async function deleteFile(path) {
 
       switch (type) {
         case "CREATE": {
-          await createFile(path.replaceAll('\n', ''))
+          await createFile(sanitizePath(path))
           break;
         }
         case "DELETE": {
-          await deleteFile(path.replaceAll('\n', ''))
+          await deleteFile(sanitizePath(path))
           break;
         }
         case "RENAME": {
-          console.log("Rename file")
+          const [oldpath, newPath] = path
+            .split(' to ')
+            .map(p => sanitizePath(p))
+
+          await renameFile(oldpath, newPath)
           break
         }
         case "UPDATE": {

@@ -1,1 +1,1 @@
-DELETE: some_file.txt
+RENAME: test.ts to my_test.md
