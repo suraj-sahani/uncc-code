@@ -22,9 +22,16 @@ async function createFile(path) {
 
 async function deleteFile(path) {
   try {
-    await fs.unlink(path)
+    // await fs.unlink(path)
+    // There is also an alternative to delete the file
+    // is fs.rm(). The difference between unlink and rm is 
+    // that rm allows us to delete files and directories 
+    await fs.rm(path)
   } catch (error) {
-    console.error(error)
+    if (error.code === 'ENOENT') {
+      console.error(`No file at this path`)
+    } else
+      console.error(error)
   }
 }
 
