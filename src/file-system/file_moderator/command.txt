@@ -1,1 +1,1 @@
-RENAME: test.ts to my_test.md
+UPDATE: my_test.md ADD hello

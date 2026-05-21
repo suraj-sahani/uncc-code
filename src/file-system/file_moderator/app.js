@@ -21,6 +21,24 @@ async function createFile(path) {
 
 }
 
+async function updateFile(path, content) {
+  try {
+    // To write to a file, we can use the fs.open with a 
+    // second parameter of "a" to open it for appending 
+    // to the file
+    const fileHandle = await fs.open(path, "a")
+    // We write the content to the file
+    fileHandle.write(content)
+
+    fileHandle.close()
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      console.error(`No file at this path`)
+    } else
+      console.error(error)
+  }
+}
+
 async function deleteFile(path) {
   try {
     // await fs.unlink(path)
@@ -117,7 +135,11 @@ async function renameFile(oldPath, newPath) {
           break
         }
         case "UPDATE": {
-          console.log("Update file")
+          const [filePath, content] = path.split("ADD")
+          const sanitizeFilePath = sanitizePath(filePath)
+
+          const sanitizedContent = content.replaceAll("\n", "").replaceAll(" ", "")
+          await updateFile(sanitizeFilePath, sanitizedContent)
           break;
         }
         default: {
