@@ -21,15 +21,18 @@ async function createFile(path) {
 
 }
 
+let addedCount;
+
 async function updateFile(path, content) {
   try {
+    if (addedCount === content) return
     // To write to a file, we can use the fs.open with a 
     // second parameter of "a" to open it for appending 
     // to the file
     const fileHandle = await fs.open(path, "a")
     // We write the content to the file
     fileHandle.write(content)
-
+    addedCount = content
     fileHandle.close()
   } catch (error) {
     if (error.code === 'ENOENT') {
