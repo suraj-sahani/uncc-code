@@ -31,7 +31,7 @@ async function updateFile(path, content) {
     // to the file
     const fileHandle = await fs.open(path, "a")
     // We write the content to the file
-    fileHandle.write(content)
+    await fileHandle.write(content)
     addedCount = content
     fileHandle.close()
   } catch (error) {
