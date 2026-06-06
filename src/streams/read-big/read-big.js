@@ -20,6 +20,27 @@ import fs from "node:fs/promises";
 
     // We will not take the chunk and write it
     // to another file using write streams
-    writeStream.write(chunk)
+    // The porble with this approach is that we are creating,
+    // a lot of back pressure where extra chunks are being buffered
+    // the same issue that we faced with the for-loop example.
+    // This will crash the process if we are writing a lot of data.
+    // To fix this, we will have to use the "drain" stream method again
+    const isDrainWritable = writeStream.write(chunk)
+    // Checking if the current stream buffer is full and we 
+    // cannot write anymore until it has been emptied.
+    // We pause the stream read as well as we need to keep track
+    // of our read progress
+    if (!isDrainWritable) {
+      readStream.pause()
+    }
+  })
+
+
+  // Once the stream is drained, we resume the stream read
+  writeStream.on('drain', () => {
+    // Doing this stream pause and resume process,
+    // we are making sure that our read-write process never creashed,
+    // no matter how large out streams are
+    readStream.resume()
   })
 })();
