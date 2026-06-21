@@ -84,7 +84,7 @@ import { pipeline } from "node:stream/promises";
 
   // To fix this issue of error handling,
   // node.js provides us pipelines.
-  pipeline(readStream, writeStream, (err){
+  pipeline(readStream, writeStream, (err) => {
     console.error(err)
   })
 })()
