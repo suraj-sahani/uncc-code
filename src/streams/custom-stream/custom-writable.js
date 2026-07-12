@@ -86,13 +86,34 @@ class FileWriteStream extends Writable {
         return callback(err)
 
       this.chunks = []
-      callback()
+      callback() // if we don't call this callback,
+      // the finish event will not be triggered
     })
+  }
+
+  // this runs when all the stream operation is done,
+  // and the stream is destroyed.
+  _destroy(error, callback) {
+    console.log(`Write Count: ${this.writesCount}`)
+    // Since this method is called when the stream is about to be destroyed,
+    // we also need to close the file.
+    if (this.fd) {
+      // pass the errors if any error is caused while closing
+      // the file
+      fs.close(this.fd, (err) => {
+        callback(err || error)
+      })
+    } else {
+      callback(error)
+    }
   }
 }
 
 const stream = new FileWriteStream({ highWaterMark: 1800, fileName: "text.txt" })
 stream.write(Buffer.from("Some random string."))
 stream.end(Buffer.from("Writing last stream"))
-
+// The finish event is called when the stream is destroyed
+stream.on('finish', () => {
+  console.log("Stream was finished")
+})
 // stream.on('drain', () => { })
